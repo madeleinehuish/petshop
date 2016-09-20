@@ -1,3 +1,5 @@
+// #!/usr/bin/env node
+
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -12,22 +14,29 @@ const seventh = process.argv[6];
 if (cmd === 'read') {
   fs.readFile(petsPath, 'utf8', (err, data) => {
     if (err) throw err;
+
     const pets = JSON.parse(data);
+
     if (Number.isNaN(fourth)) {
       console.log(pets);
       process.exit();
     }
+
     if (fourth >= pets.length || fourth < 0){
       console.error(`Usage: ${node} ${file} read INDEX`);
       process.exit(1);
     }
+
     else if (!fourth){
       console.log(pets);
-    } else {
+    }
+
+    else {
       console.log(pets[fourth]);
     }
   });
-} else if (cmd === 'create') {
+}
+else if (cmd === 'create') {
     fs.readFile(petsPath, 'utf8', (readErr, data) => {
     if (readErr) throw readErr;
     const pets = JSON.parse(data);
@@ -43,11 +52,16 @@ if (cmd === 'read') {
         pets.push(newPet);
 
     const petsJSON = JSON.stringify(pets);
+
     fs.writeFile(petsPath, petsJSON, (writeErr) => {
       if (writeErr) throw writeErr;
-    });console.log(newPet);
+    });
+
+    console.log(newPet);
+
   });
-} else if (cmd === 'update'){
+}
+else if (cmd === 'update'){
   fs.readFile(petsPath, 'utf8', (readErr, data) => {
   if (readErr) throw readErr;
   const pets = JSON.parse(data);
@@ -62,13 +76,16 @@ if (cmd === 'read') {
   pets[Number(fourth)] = newPet;
 
   const petsJSON = JSON.stringify(pets);
+
   fs.writeFile(petsPath, petsJSON, (writeErr) => {
     if (writeErr) throw writeErr;
-  });console.log(newPet);
+  });
+
+  console.log(newPet);
 });
 
-} else if (cmd === 'destroy') {
-  // console.log(fourth);
+}
+else if (cmd === 'destroy') {
   fs.readFile(petsPath, 'utf8', (readErr, data) => {
   if (readErr) throw readErr;
   const pets = JSON.parse(data);
@@ -90,7 +107,8 @@ if (cmd === 'read') {
     if (writeErr) throw writeErr;
   });
 });
-} else {
+}
+else {
     console.error(`Usage: ${node} ${file} [read | create | update | destroy]`);
     process.exit(1);
 }
