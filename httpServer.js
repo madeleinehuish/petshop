@@ -20,8 +20,9 @@ const server = http.createServer((req, res) => {
         res.end(petsJSON);
       }
     });
+    return;
   }
-  else if (req.method === 'GET' && regExp.test(req.url)){
+   if (req.method === 'GET' && regExp.test(req.url)){
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
       if (err) {
         console.error(err.stack);
@@ -38,11 +39,22 @@ const server = http.createServer((req, res) => {
         const petJSON = JSON.stringify(pets[indexPet]);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.end(petJSON);
+        res.end(petsJSON);
       }}
     });
   }
-  else if (req.url === '/' || !regExp.test(req.url)) {
+  else if (req.method === 'POST') {
+    if (typeof petsJSON === 'undefined') {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end('Bad Request');
+      return;
+    }
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(petsJSON);
+  }
+  else if (req.url === '/' || !regExp.test(req.url)){
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Not Found');
