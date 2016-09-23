@@ -43,16 +43,51 @@ const server = http.createServer((req, res) => {
       }}
     });
   }
-  else if (req.method === 'POST') {
-    if (typeof petsJSON === 'undefined') {
-      res.statusCode = 400;
-      res.setHeader('Content-Type', 'text/plain');
-      res.end('Bad Request');
-      return;
-    }
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(petsJSON);
+  else if (req.method === 'POST' && req.url === '/pets') {
+    let bodyJSON = '';
+
+    req.on('data', (chunk) => {
+      bodyJSON += chunk.toString();
+    });
+
+    req.on('end', () => {
+      // eslint-disable-next-line max-statements
+      fs.readFile(petsPath, 'utf8', (readErr, petsJSON) => {
+        if (readErr) {
+          throw readErr;
+        }
+
+        const body = JSON.parse(bodyJSON);
+        const pets = JSON.parse(petsJSON);
+        const age = Number.parseInt(body.age);
+        const kind = body.kind;
+        const name = body.name;
+
+        if (Number.isNaN(age) || !kind || !name) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'text/plain');
+          res.end('Bad Request');
+
+          return;
+        }
+
+        const pet = { age, kind, name };
+
+        pets.push(pet);
+
+        const petJSON = JSON.stringify(pet);
+        const newPetsJSON = JSON.stringify(pets);
+
+        fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
+          if (writeErr) {
+            throw writeErr;
+          }
+
+          res.setHeader('Content-Type', 'application/json');
+          res.end(petJSON);
+        });
+      });
+    });
   }
   else if (req.url === '/' || !regExp.test(req.url)){
     res.statusCode = 404;
