@@ -16,7 +16,7 @@ const seventh = process.argv[6];
 
 if (cmd === 'read') {
   fs.readFile(petsPath, 'utf8', (err, data) => {
-    if (err) throw err;
+    if (err) { throw err; }
 
     const pets = JSON.parse(data);
 
@@ -41,7 +41,7 @@ if (cmd === 'read') {
 }
 else if (cmd === 'create') {
   fs.readFile(petsPath, 'utf8', (readErr, data) => {
-    if (readErr) throw readErr;
+    if (readErr) { throw readErr; }
     const pets = JSON.parse(data);
 
     if (!fourth || !fifth || !sixth || isNaN(fourth)) {
@@ -58,7 +58,7 @@ else if (cmd === 'create') {
     const petsJSON = JSON.stringify(pets);
 
     fs.writeFile(petsPath, petsJSON, (writeErr) => {
-      if (writeErr) throw writeErr;
+      if (writeErr) { throw writeErr; }
     });
 
     console.log(newPet);
@@ -66,7 +66,7 @@ else if (cmd === 'create') {
 }
 else if (cmd === 'update') {
   fs.readFile(petsPath, 'utf8', (readErr, data) => {
-    if (readErr) throw readErr;
+    if (readErr) { throw readErr; }
     const pets = JSON.parse(data);
 
     if (!fourth || !fifth || !sixth || isNaN(fourth) || !seventh) {
@@ -83,14 +83,14 @@ else if (cmd === 'update') {
     const petsJSON = JSON.stringify(pets);
 
     fs.writeFile(petsPath, petsJSON, (writeErr) => {
-      if (writeErr) throw writeErr;
+      if (writeErr) { throw writeErr; }
     });
     console.log(newPet);
   });
 }
 else if (cmd === 'destroy') {
   fs.readFile(petsPath, 'utf8', (readErr, data) => {
-    if (readErr) throw readErr;
+    if (readErr) { throw readErr; }
 
     const pets = JSON.parse(data);
 
@@ -110,7 +110,7 @@ else if (cmd === 'destroy') {
     const petsJSON = JSON.stringify(pets);
 
     fs.writeFile(petsPath, petsJSON, (writeErr) => {
-      if (writeErr) throw writeErr;
+      if (writeErr) { throw writeErr; }
     });
   });
 }
