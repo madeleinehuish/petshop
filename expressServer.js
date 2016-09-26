@@ -1,4 +1,7 @@
 'use strict';
+
+/* eslint no-console: 0 */
+
 const fs = require('fs');
 const path = require('path');
 const petsPath = path.join(__dirname, 'pets.json');

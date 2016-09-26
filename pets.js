@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// eslint no-console: 0
+/* eslint no-console: 0 */
 
 'use strict';
 const fs = require('fs');
