@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-// const regExp = /^\/pets\sage=\d*\skind=(.*)\sname=(.*)$/;
+
 app.disable('x-powered-by');
 app.use(morgan('short'));
 app.use(bodyParser.json());
@@ -15,9 +15,11 @@ app.get('/pets', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) {
       console.error(err.stack);
+
       return res.sendStatus(500);
     }
     const pets = JSON.parse(petsJSON);
+
     res.send(pets);
   });
 });
@@ -25,15 +27,18 @@ app.post('/pets', (req, res) => {
   fs.readFile(petsPath, 'utf8', (readErr, petsJSON) => {
     if (readErr) {
       console.error(readErr.stack);
+
       return res.sendStatus(500);
     }
     const pets = JSON.parse(petsJSON);
     const name = req.body.name;
     const age = parseInt(req.body.age);
     const kind = req.body.kind;
-    const pet ={age, kind, name};
-    if (!name || !age || !kind){
+    const pet = { age, kind, name };
+
+    if (!name || !age || !kind) {
       console.error('Bad Request');
+
       return res.sendStatus(400);
     }
     if (!pet) {
@@ -41,9 +46,11 @@ app.post('/pets', (req, res) => {
     }
     pets.push(pet);
     const newpetsJSON = JSON.stringify(pets);
+
     fs.writeFile(petsPath, newpetsJSON, (writeErr) => {
       if (writeErr) {
         console.error(writeErr.stack);
+
         return res.sendStatus(500);
       }
       res.set('Content-Type', 'application/json');
@@ -55,10 +62,12 @@ app.get('/pets/:id', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) {
       console.error(err.stack);
+
       return res.sendStatus(500);
     }
     const id = Number.parseInt(req.params.id);
     const pets = JSON.parse(petsJSON);
+
     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
       return res.sendStatus(404);
     }
