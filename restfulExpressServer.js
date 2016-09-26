@@ -1,4 +1,5 @@
 'use strict';
+
 /* eslint no-console: 0 */
 
 const fs = require('fs');
@@ -18,7 +19,7 @@ const user = {
 app.disable('x-powered-by');
 app.use(morgan('short'));
 app.use(bodyParser.json());
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   const user = basicAuth(req);
 
   if (!user || !user.name || !user.pass) {
@@ -44,13 +45,13 @@ app.get('/pets/:id', (req, res) => {
   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
     if (err) {
       console.error(err.stack);
+
       return res.sendStatus(500);
     }
     const id = Number.parseInt(req.params.id);
     const pets = JSON.parse(petsJSON);
 
     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-
       return res.sendStatus(404);
     }
     res.set('Content-Type', 'application/json');
@@ -68,19 +69,19 @@ app.post('/pets', (req, res) => {
     const name = req.body.name;
     const age = parseInt(req.body.age);
     const kind = req.body.kind;
-    const pet ={ age, kind, name };
+    const pet = { age, kind, name };
 
-    if (!name || !age || !kind){
+    if (!name || !age || !kind) {
       console.error('Bad Request');
 
       return res.sendStatus(400);
     }
     if (!pet) {
-
       return res.sendStatus(400);
     }
     pets.push(pet);
     const newpetsJSON = JSON.stringify(pets);
+
     fs.writeFile(petsPath, newpetsJSON, (writeErr) => {
       if (writeErr) {
         console.error(writeErr.stack);
@@ -105,7 +106,8 @@ app.put('/pets/:id', (req, res) => {
     const kind = req.body.kind;
     const pet = { age, kind, name };
     const id = parseInt(req.params.id);
-    if (!name || !age || !kind){
+
+    if (!name || !age || !kind) {
       console.error('Bad Request');
 
       return res.sendStatus(400);
@@ -115,6 +117,7 @@ app.put('/pets/:id', (req, res) => {
     }
     pets[id] = pet;
     const newpetsJSON = JSON.stringify(pets);
+
     fs.writeFile(petsPath, newpetsJSON, (writeErr) => {
       if (writeErr) {
         console.error(writeErr.stack);
@@ -130,6 +133,7 @@ app.patch('/pets/:id', (req, res) => {
   fs.readFile(petsPath, 'utf8', (readErr, petsJSON) => {
     if (readErr) {
       console.error(readErr.stack);
+
       return res.sendStatus(500);
     }
     const pets = JSON.parse(petsJSON);
@@ -180,8 +184,8 @@ app.delete('/pets/:id', (req, res) => {
     }
     const id = Number.parseInt(req.params.id);
     const pets = JSON.parse(petsJSON);
-    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
 
+    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
       return res.sendStatus(404);
     }
     const pet = pets.splice(id, 1)[0];
