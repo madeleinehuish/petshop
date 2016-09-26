@@ -6,7 +6,8 @@ const http = require('http');
 const port = process.env.PORT || 8000;
 const regExp = /^\/pets\/(.*)$/;
 const server = http.createServer((req, res) => {
-  let indexPet = req.url.substring(req.url.lastIndexOf('/')+1);
+  const indexPet = req.url.substring(req.url.lastIndexOf('/')+1);
+
   if (req.method === 'GET' && req.url === '/pets'){
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
       if (err) {
@@ -22,25 +23,28 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-   if (req.method === 'GET' && regExp.test(req.url)){
+  if (req.method === 'GET' && regExp.test(req.url)){
     fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
       if (err) {
         console.error(err.stack);
         res.statusCode = 500;
         res.setHeader('Content-Type', 'text/plain');
         return res.end('Internal Server Error');
-      } else {
+      }
+      else {
         const pets = JSON.parse(petsJSON);
         if (indexPet > pets.length - 1 || indexPet < 0) {
           res.statusCode = 404;
           res.setHeader('Content-Type', 'text/plain');
           res.end('Not Found');
-        } else {
-        const petJSON = JSON.stringify(pets[indexPet]);
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(petJSON);
-      }}
+        }
+        else {
+          const petJSON = JSON.stringify(pets[indexPet]);
+
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(petJSON);
+        } }
     });
   }
   else if (req.method === 'POST' && req.url === '/pets') {
